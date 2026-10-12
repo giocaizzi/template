@@ -1,5 +1,9 @@
 # Updates are always grouped (GitHub standard, giocaizzi/.github docs/standard.md).
+# Every entry sets commit-message.prefix so PR titles pass the Validate PR title check:
+# "ci(deps)" for github-actions, "chore(deps)" for every other ecosystem.
 # Language ecosystems (uv, npm, ...) use three groups:
+#   commit-message:
+#     prefix: "chore(deps)"
 #   groups:
 #     minor-patch: {update-types: [minor, patch]}
 #     major: {update-types: [major]}
@@ -10,6 +14,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    commit-message:
+      prefix: "ci(deps)"
     groups:
       github-actions:
         patterns: ["*"]
