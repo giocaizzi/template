@@ -1,6 +1,15 @@
+# Updates are always grouped (GitHub standard, giocaizzi/.github docs/standard.md).
+# Language ecosystems (uv, npm, ...) use three groups:
+#   groups:
+#     minor-patch: {update-types: [minor, patch]}
+#     major: {update-types: [major]}
+#     security: {applies-to: security-updates, patterns: ["*"]}
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]
