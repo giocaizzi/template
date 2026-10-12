@@ -15,7 +15,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
@@ -31,5 +31,5 @@ jobs:
       - name: Fail if a needed job did not succeed
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped')
         run: exit 1
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: make check
