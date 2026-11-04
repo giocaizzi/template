@@ -1,7 +1,11 @@
-# Updates are always grouped (GitHub standard, giocaizzi/.github docs/standard.md).
-# Every entry sets commit-message.prefix so PR titles pass the Validate PR title check:
+# Updates are batched: weekly, capped and always grouped (GitHub standard, giocaizzi/.github docs/standard.md,
+# Dependabot updates). Every entry sets commit-message.prefix so PR titles pass the Validate PR title check:
 # "ci(deps)" for github-actions, "chore(deps)" for every other ecosystem.
-# Language ecosystems (uv, npm, ...) use three groups:
+# Security updates are a repo setting: raised as advisories appear, never held to the schedule, the cap or the groups.
+# Language ecosystems (uv, npm, ...) use this shape:
+#   schedule:
+#     interval: weekly
+#   open-pull-requests-limit: 2
 #   commit-message:
 #     prefix: "chore(deps)"
 #   groups:
@@ -14,6 +18,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 1
     commit-message:
       prefix: "ci(deps)"
     groups:
