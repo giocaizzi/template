@@ -2,11 +2,12 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches: [main]
+  workflow_dispatch: # on-demand run, also the opt-in of CI tiers
   # CI tiers, only with a merge queue that every change must pass (giocaizzi/.github docs/standard.md, CI tiers):
   # merge_group:
-  # workflow_dispatch:
 
 concurrency:
   # one group per pull request, superseded runs cancelled; every other run gets its own group, never cancelled
@@ -17,7 +18,9 @@ permissions:
   contents: read
 
 jobs:
+  # Drafts skip CI: every job without `needs` carries the draft condition (standard, CI hygiene, Drafts).
   secrets:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -35,6 +38,7 @@ jobs:
   # each output is 'true', and it fails (never outputs 'false') when it cannot compute the diff.
   # A gated job sets `needs: [changes]` and `if: needs.changes.outputs.code == 'true'`.
   changes:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -78,9 +82,9 @@ jobs:
   #     - run: make e2e
 
   # Example full-tier job (CI tiers, only with a merge queue): runs on merge_group and on an opt-in dispatch,
-  # skipped on pull_request and push. Uncomment, add it to `check.needs` and to FULL_TIER in `check`.
+  # skipped on pull_request and push. CI_FULL_TIER_ON_PR=true (repository variable) is the rollback to a full PR run. Uncomment, add it to `check.needs` and to FULL_TIER in `check`.
   # integration:
-  #   if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch'
+  #   if: github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && !github.event.pull_request.draft && vars.CI_FULL_TIER_ON_PR == 'true')
   #   runs-on: ubuntu-latest
   #   timeout-minutes: 30
   #   steps:
@@ -89,8 +93,9 @@ jobs:
 
   # Required status check of the GitHub standard. Add jobs to `needs`, never rename this job.
   check:
+    name: ${{ github.event.pull_request.draft && 'Skip CI (draft)' || 'check' }}
     needs: [secrets, changes]
-    if: always()
+    if: ${{ always() && !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

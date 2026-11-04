@@ -1,4 +1,4 @@
-.PHONY: help lint test check
+.PHONY: help lint test check prepush
 .DEFAULT_GOAL := help
 
 help: ## Show this help
@@ -11,3 +11,5 @@ test: ## Test (replace with the project's test runner)
 	@echo "no tests yet"
 
 check: lint test ## lint + test (the CI gate)
+
+prepush: check ## Local gate before marking a PR ready (= check; tiered repos: light tier + touched integration tests)
