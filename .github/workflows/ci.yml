@@ -54,9 +54,17 @@ jobs:
             exit 0
           fi
           # A pull_request checkout is the merge commit: its first parent is the base, so this lists the PR's changes.
-          files=$(git diff --name-only HEAD^1 HEAD)
-          # code: anything outside docs/ and Markdown (adapt the pattern per repo)
-          if grep -qvE '^docs/|\.md$' <<<"$files"; then code=true; else code=false; fi
+          # --no-renames lists both paths of a move, so a file moved out of a filtered path still counts.
+          files=$(git diff --name-only --no-renames HEAD^1 HEAD)
+          # code: anything outside docs/ and Markdown (adapt the pattern per repo). grep exits 0 on a match,
+          # 1 on none; anything else (a bad pattern) fails the job instead of outputting 'false'.
+          rc=0
+          grep -qvE '^docs/|\.md$' <<<"$files" || rc=$?
+          case "$rc" in
+            0) code=true ;;
+            1) code=false ;;
+            *) exit "$rc" ;;
+          esac
           echo "code=$code" >> "$GITHUB_OUTPUT"
 
   # Example heavy job gated by `changes`: uncomment, adapt, add it to `check.needs` and to GATED in `check`.
