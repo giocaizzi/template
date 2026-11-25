@@ -2,7 +2,8 @@
 
 <One line: what this repo is for.>
 
-- Commands: `make help`, `make lint`, `make test`, `make check` (= lint + test; CI job `check` runs it), `make prepush` (the local gate before marking a PR ready).
+- Commands: `make help`, `make lint`, `make test`, `make check` (= lint + test; CI job `check` runs it), `make check-fast` (optional cheap gate scoped to the change), `make prepush` (optional, advisory).
+- Local gate before marking a PR ready: `make check-fast` if the Makefile defines it, otherwise `make check`. CI is the real gate ([standard](https://github.com/giocaizzi/.github/blob/main/docs/standard.md#ci-and-releases)).
 - Docs live in [docs/](docs/); this file links to them and never duplicates them.
 - GitHub setup follows the [GitHub standard](https://github.com/giocaizzi/.github/blob/main/docs/standard.md).
 - `SECURITY.md` and issue templates are inherited from `giocaizzi/.github`; do not add copies.
